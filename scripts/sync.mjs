@@ -85,6 +85,28 @@ function wpApiUrl(pageUrl) {
   }
 }
 
+const FLARESOLVERR_URL = process.env.FLARESOLVERR_URL ?? 'http://127.0.0.1:8191/v1'
+
+async function fetchViaFlareSolverr(url) {
+  try {
+    const res = await fetch(FLARESOLVERR_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ cmd: 'request.get', url, maxTimeout: 60000 }),
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    const html = data?.solution?.response
+    if (data?.status === 'ok' && typeof html === 'string' && html.includes('const D=')) {
+      console.log(`Fetched via FlareSolverr (${ data.message || 'ok' })`)
+      return html
+    }
+  } catch {
+    // FlareSolverr not running locally; fall through
+  }
+  return null
+}
+
 async function fetchPageHtml(url) {
   const res = await fetch(url, { headers: REQUEST_HEADERS })
   if (res.ok) return await res.text()
@@ -103,6 +125,9 @@ async function fetchPageHtml(url) {
       }
     }
   }
+
+  const solved = await fetchViaFlareSolverr(url)
+  if (solved) return solved
 
   throw new Error(`GET ${url} failed: ${res.status} ${res.statusText}`)
 }
