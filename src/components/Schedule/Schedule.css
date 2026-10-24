@@ -146,6 +146,14 @@ table.grid{border-collapse:collapse;width:100%;min-width:1000px;table-layout:fix
 }
 }
 
+/* Mobile: day / whole-week toggle and the week listing */
+.orar {
+  .viewtoggle { display: grid; margin-bottom: 10px; }
+  .dayhead { display: flex; align-items: center; gap: 8px; margin: 18px 0 6px; font-size: 17px; font-weight: 800; font-stretch: 108%; }
+  .dayhead.today::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--now); }
+  .dayempty { padding: 8px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+}
+
 /* Calendar (.ics) actions next to the group heading */
 .orar {
   .calactions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; align-self: center; }

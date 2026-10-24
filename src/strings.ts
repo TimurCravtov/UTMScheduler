@@ -43,6 +43,9 @@ export const strings = {
 
   hours: 'Ora',
   dayTabs: 'Ziua',
+  viewLabel: 'Vizualizare',
+  viewDay: 'Zi',
+  viewWeek: 'Săptămână',
   onlyInWeek: (week: WeekParity) => `Doar în săptămâna ${strings.parityName[week]}`,
   weekTag: (week: WeekParity) => `săpt. ${strings.parityName[week]}`,
   weekFree: (week: WeekParity) => `săpt. ${strings.parityName[week]}: liber`,
