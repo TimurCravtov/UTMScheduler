@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useModel } from '../../context/ScheduleContext'
+import { useCalendarGroups } from '../../hooks/useCalendarGroups'
 import { useSelection } from '../../hooks/useSelection'
 import { findClashes, todayIndex } from '../../lib/schedule'
 import { strings } from '../../strings'
 import type { Entry } from '../../types'
+import { CalendarActions } from './CalendarActions'
 import { DayView } from './DayView'
 import { GroupPicker } from './GroupPicker'
 import { Legend } from './Legend'
@@ -23,6 +25,7 @@ export function Schedule() {
     useSelection(model)
   const { mode, year, group, teacher, week } = selection
 
+  const calendarGroups = useCalendarGroups()
   const today = todayIndex()
   const [day, setDay] = useState(Math.max(today, 0))
 
@@ -49,6 +52,7 @@ export function Schedule() {
             {heading}
           </h2>
           {mode === 'group' && studyYear && <p>{strings.yearSemester(studyYear.y, studyYear.sem)}</p>}
+          {mode === 'group' && calendarGroups.has(group) && <CalendarActions group={group} />}
         </div>
         <Legend />
         {clashes.size > 0 && <div className="clashnote">{strings.clashNote(clashes.size)}</div>}

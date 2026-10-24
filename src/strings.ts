@@ -48,6 +48,10 @@ export const strings = {
   weekFree: (week: WeekParity) => `săpt. ${strings.parityName[week]}: liber`,
   roomPrefix: 'sala ',
 
+  addToCalendar: 'Adaugă în calendar',
+  copyCalendarLink: 'Copiază linkul de abonare',
+  linkCopied: 'Link copiat',
+
   fullTimetable: 'Orarul complet',
   fullTimetableIn: (format: string) => `Orarul complet în format ${format}`,
   semester: (sem: string) => `sem. ${sem}`,
