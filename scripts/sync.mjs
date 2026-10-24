@@ -71,6 +71,10 @@ if (!res.ok) throw new Error(`GET ${sourceUrl} failed: ${res.status} ${res.statu
 const html = await res.text()
 
 const data = extractAfter(html, 'const D=', 'the schedule data (const D=)')
+// Refuse to overwrite good data with an empty or reshaped payload
+if (!Array.isArray(data.rec) || !data.rec.length || !Array.isArray(data.years) || !data.years.length) {
+  fail('any timetable records')
+}
 
 // Full-timetable links: window.ORAR_FCIM_EXCEL = { "Anul I": "…", … }
 const rawLinks = extractAfter(html, 'window.ORAR_FCIM_EXCEL =', 'the timetable file links')
