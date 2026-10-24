@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  background: #121212;
+  color-scheme: dark;
+}
+
+.page-status {
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #9a9a9a;
+}
+
+.page-status.error {
+  color: #ececec;
+}
