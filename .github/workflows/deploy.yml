@@ -35,9 +35,16 @@ jobs:
       - run: npm ci
 
       # Scrapes the live page into public/data/schedule.json and rebuilds public/ics/*.ics.
-      # If the page is unreachable or its layout changed this step fails and the previous deployment stays up.
+      # The site may refuse requests from GitHub's servers (403) or change its layout; in that case the
+      # build carries on with the data committed to the repo instead of failing the whole deployment.
       - name: Sync timetable
+        id: sync
+        continue-on-error: true
         run: npm run sync
+
+      - name: Warn that the timetable is not fresh
+        if: steps.sync.outcome == 'failure'
+        run: echo "::warning title=Timetable sync failed::Deploying the timetable data committed to the repo instead."
 
       - uses: actions/configure-pages@v5
         id: pages

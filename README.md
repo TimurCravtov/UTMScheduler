@@ -39,6 +39,8 @@ Importing the file is a one-time snapshot; subscribing to the link keeps the cal
 ## Deployment
 
 `.github/workflows/deploy.yml` re-scrapes the timetable (`npm run sync`), rebuilds and deploys to GitHub Pages every
-6 hours, on pushes to `main`, and on demand. If the scrape fails the job fails and the previous deployment stays up.
+6 hours, on pushes to `main`, and on demand. If the scrape fails (for example the site returns 403 to GitHub's
+servers, or its layout changed) the job shows a warning and deploys the data committed in `public/data` and
+`public/ics` instead. When the live scrape can't run in CI, refresh those files locally with `npm run sync` and push.
 Enable it under Settings → Pages → Source: GitHub Actions. The build reads `BASE_PATH` (set by the workflow) so assets
 load from `/<repo>/`.
