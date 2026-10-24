@@ -34,7 +34,6 @@ export const strings = {
   currentWeek: (n: number) => `Săpt. ${n}`,
   outsideSemester: 'În afara perioadei de cursuri',
 
-  yearSemester: (year: string, sem: string) => `Anul ${year}, semestrul ${sem}.`,
   clashNote: (count: number) =>
     `Atenție: ${count} activități se suprapun în același interval, în săli diferite. Sunt marcate cu roșu.`,
   nothingFound: 'Nu am găsit activități pentru această selecție.',

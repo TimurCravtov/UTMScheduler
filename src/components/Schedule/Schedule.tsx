@@ -38,9 +38,7 @@ export function Schedule() {
   const entries = useMemo(() => model.getEntries(mode, group, teacher), [model, mode, group, teacher])
   const clashes = useMemo(() => (mode === 'teacher' ? findClashes(entries) : NO_CLASHES), [mode, entries])
 
-  const heading = mode === 'group' ? group : teacher ? model.displayName(teacher) : ''
-  const academicTitle = mode === 'teacher' && teacher ? model.getTitle(teacher) : undefined
-  const studyYear = model.findYear(year)
+  const academicTitle = teacher ? model.getTitle(teacher) : undefined
 
   let results
   if (mode === 'teacher' && !teacher) {
@@ -48,14 +46,14 @@ export function Schedule() {
   } else {
     results = (
       <>
-        <div className="summary">
-          <h2>
-            {academicTitle && <span className="ttl">{academicTitle} </span>}
-            {heading}
-          </h2>
-          {mode === 'group' && studyYear && <p>{strings.yearSemester(studyYear.y, studyYear.sem)}</p>}
-          {mode === 'group' && calendarGroups.has(group) && <CalendarActions group={group} />}
-        </div>
+        {mode === 'teacher' && teacher && (
+          <div className="summary">
+            <h2>
+              {academicTitle && <span className="ttl">{academicTitle} </span>}
+              {model.displayName(teacher)}
+            </h2>
+          </div>
+        )}
         <Legend />
         {clashes.size > 0 && <div className="clashnote">
             <LuTriangleAlert aria-hidden />
@@ -77,6 +75,7 @@ export function Schedule() {
             />
           </>
         )}
+        {mode === 'group' && calendarGroups.has(group) && <CalendarActions group={group} />}
       </>
     )
   }
