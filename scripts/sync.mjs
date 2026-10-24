@@ -66,9 +66,48 @@ function dateArgs(html, name, what) {
   return m[1].split(',').map((n) => Number(n.trim()))
 }
 
-const res = await fetch(sourceUrl, { headers: { 'user-agent': 'utm-scheduler-sync' } })
-if (!res.ok) throw new Error(`GET ${sourceUrl} failed: ${res.status} ${res.statusText}`)
-const html = await res.text()
+const REQUEST_HEADERS = {
+  'user-agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7',
+  'accept-language': 'ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7',
+}
+
+/** Derives the WordPress REST API URL for a given page URL (`https://host/slug/` -> `/wp-json/wp/v2/pages?slug=...`). */
+function wpApiUrl(pageUrl) {
+  try {
+    const u = new URL(pageUrl)
+    const slug = u.pathname.split('/').filter(Boolean).pop()
+    if (!slug) return null
+    return `${u.origin}/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&_fields=content`
+  } catch {
+    return null
+  }
+}
+
+async function fetchPageHtml(url) {
+  const res = await fetch(url, { headers: REQUEST_HEADERS })
+  if (res.ok) return await res.text()
+
+  const apiUrl = wpApiUrl(url)
+  if (apiUrl) {
+    const apiRes = await fetch(apiUrl, {
+      headers: { ...REQUEST_HEADERS, accept: 'application/json' },
+    })
+    if (apiRes.ok) {
+      const pages = await apiRes.json()
+      const rendered = pages?.[0]?.content?.rendered
+      if (typeof rendered === 'string' && rendered.length > 0) {
+        console.log(`Fetched via WordPress REST API fallback (${apiUrl})`)
+        return rendered
+      }
+    }
+  }
+
+  throw new Error(`GET ${url} failed: ${res.status} ${res.statusText}`)
+}
+
+const html = await fetchPageHtml(sourceUrl)
 
 const data = extractAfter(html, 'const D=', 'the schedule data (const D=)')
 // Refuse to overwrite good data with an empty or reshaped payload
