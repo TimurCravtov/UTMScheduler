@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "sync": "node scripts/sync.mjs",
+    "sync": "node scripts/sync.mjs && node scripts/build-ics.mjs",
+    "ics": "node scripts/build-ics.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
