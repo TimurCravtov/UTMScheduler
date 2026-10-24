@@ -31,8 +31,7 @@ export const strings = {
   currentWeekMark: 'Săptămâna curentă',
   /** Adjective for each parity value (index 0 is unused). */
   parityName: ['', 'impară', 'pară'] as readonly string[],
-  currentWeek: (n: number) => `săptămâna ${n}`,
-  currentWeekPrefix: 'Acum este',
+  currentWeek: (n: number) => `Săpt. ${n}`,
   outsideSemester: 'În afara perioadei de cursuri',
 
   yearSemester: (year: string, sem: string) => `Anul ${year}, semestrul ${sem}.`,
@@ -44,12 +43,13 @@ export const strings = {
   hours: 'Ora',
   dayTabs: 'Ziua',
   viewLabel: 'Vizualizare',
-  viewDay: 'Zi',
-  viewWeek: 'Săptămână',
+  viewDay: 'O zi',
+  viewWeek: 'Toată săptămâna',
   onlyInWeek: (week: WeekParity) => `Doar în săptămâna ${strings.parityName[week]}`,
-  weekTag: (week: WeekParity) => `săpt. ${strings.parityName[week]}`,
-  weekFree: (week: WeekParity) => `săpt. ${strings.parityName[week]}: liber`,
-  roomPrefix: 'sala ',
+  weekTag: (week: WeekParity) => strings.parityName[week],
+  weekFree: (week: WeekParity) => `${strings.parityName[week]}: liber`,
+  room: 'Sala',
+  groups: 'Grupe',
 
   addToCalendar: 'Adaugă în calendar',
   copyCalendarLink: 'Copiază linkul de abonare',

@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { LuCalendar1, LuCalendarDays } from 'react-icons/lu'
 import { useModel } from '../../context/ScheduleContext'
 import { isVisible } from '../../lib/schedule'
 import { strings } from '../../strings'
 import type { Entry, Mode, WeekParity } from '../../types'
+import { Empty } from './Empty'
 import { SlotCell } from './SlotCell'
 
 interface Props {
@@ -61,17 +63,8 @@ export function DayView({ entries, mode, week, clashes, today, day, onDayChange 
 
   return (
     <div className="days">
-      <div className="seg viewtoggle" role="group" aria-label={strings.viewLabel}>
-        <button type="button" aria-pressed={view === 'day'} onClick={() => changeView('day')}>
-          {strings.viewDay}
-        </button>
-        <button type="button" aria-pressed={view === 'week'} onClick={() => changeView('week')}>
-          {strings.viewWeek}
-        </button>
-      </div>
-
-      {view === 'day' ? (
-        <>
+      <div className="daybar">
+        {view === 'day' && (
           <div className="daytabs" role="group" aria-label={strings.dayTabs}>
             {data.days.map((d, i) => (
               <button
@@ -86,14 +79,39 @@ export function DayView({ entries, mode, week, clashes, today, day, onDayChange 
               </button>
             ))}
           </div>
-          {slotsOf(day).length === 0 && <div className="empty">{strings.nothingToday}</div>}
+        )}
+        <div className="seg viewtoggle" role="group" aria-label={strings.viewLabel}>
+          <button
+            type="button"
+            aria-pressed={view === 'day'}
+            aria-label={strings.viewDay}
+            title={strings.viewDay}
+            onClick={() => changeView('day')}
+          >
+            <LuCalendar1 aria-hidden />
+          </button>
+          <button
+            type="button"
+            aria-pressed={view === 'week'}
+            aria-label={strings.viewWeek}
+            title={strings.viewWeek}
+            onClick={() => changeView('week')}
+          >
+            <LuCalendarDays aria-hidden />
+          </button>
+        </div>
+      </div>
+
+      {view === 'day' ? (
+        <>
+          {slotsOf(day).length === 0 && <Empty>{strings.nothingToday}</Empty>}
           {renderSlots(day)}
         </>
       ) : (
         data.days.map((d, i) => (
           <section key={d} aria-label={d}>
             <h3 className={`dayhead${i === today ? ' today' : ''}`}>{d}</h3>
-            {slotsOf(i).length === 0 ? <div className="dayempty">{strings.nothingToday}</div> : renderSlots(i)}
+            {slotsOf(i).length === 0 ? <Empty className="dayempty">{strings.nothingToday}</Empty> : renderSlots(i)}
           </section>
         ))
       )}

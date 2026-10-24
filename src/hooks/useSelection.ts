@@ -14,8 +14,7 @@ function readStored(): Partial<Selection> {
 
 /** Current mode / group / teacher / week filter, restored from and persisted to localStorage. */
 export function useSelection(model: ScheduleModel) {
-  const [stored] = useState(readStored)
-  const [selection, setSelection] = useState<Selection>(() => model.resolveSelection(stored))
+  const [selection, setSelection] = useState<Selection>(() => model.resolveSelection(readStored()))
 
   useEffect(() => {
     try {
@@ -47,8 +46,6 @@ export function useSelection(model: ScheduleModel) {
 
   return {
     selection,
-    /** Whether the visitor had already picked a group before (the picker then starts collapsed). */
-    hadStoredGroup: !!stored.group,
     setMode,
     setWeek,
     setTeacher,

@@ -1,4 +1,5 @@
 import { useId, useMemo, useState } from 'react'
+import { LuSearch } from 'react-icons/lu'
 import { useModel } from '../../context/ScheduleContext'
 import { strings } from '../../strings'
 
@@ -37,57 +38,56 @@ export function TeacherSearch({ teacher, onPick }: Props) {
   }
 
   return (
-    <section className="controls">
-      <div className="field tsearch">
-        <span>{strings.teacher}</span>
-        <input
-          type="search"
-          value={query}
-          placeholder={strings.teacherPlaceholder}
-          autoComplete="off"
-          autoFocus={!teacher}
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-activedescendant={open && items.length ? `${listId}-${active}` : undefined}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            setActive(0)
-            setOpen(true)
-          }}
-          onKeyDown={onKeyDown}
-        />
-        <div className={`tlist${open ? ' open' : ''}`} id={listId} role="listbox">
-          {items.length ? (
-            items.map((t, i) => {
-              const title = model.getTitle(t)
-              return (
-                <button
-                  type="button"
-                  role="option"
-                  key={t}
-                  id={`${listId}-${i}`}
-                  aria-selected={i === active}
-                  className={i === active ? 'act' : ''}
-                  tabIndex={-1}
-                  // mousedown (not click) so the input keeps focus and doesn't close the list first
-                  onMouseDown={(e) => {
-                    e.preventDefault()
-                    pick(t)
-                  }}
-                >
-                  {model.displayName(t)}
-                  {title && <small>{title}</small>}
-                </button>
-              )
-            })
-          ) : (
-            <div style={{ padding: 10, color: 'var(--muted)' }}>{strings.noTeacherFound}</div>
-          )}
-        </div>
+    <div className="tsearch">
+      <LuSearch aria-hidden />
+      <input
+        type="search"
+        value={query}
+        placeholder={strings.teacherPlaceholder}
+        aria-label={strings.teacher}
+        autoComplete="off"
+        autoFocus={!teacher}
+        role="combobox"
+        aria-expanded={open}
+        aria-controls={listId}
+        aria-activedescendant={open && items.length ? `${listId}-${active}` : undefined}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onChange={(e) => {
+          setQuery(e.target.value)
+          setActive(0)
+          setOpen(true)
+        }}
+        onKeyDown={onKeyDown}
+      />
+      <div className={`tlist${open ? ' open' : ''}`} id={listId} role="listbox">
+        {items.length ? (
+          items.map((t, i) => {
+            const title = model.getTitle(t)
+            return (
+              <button
+                type="button"
+                role="option"
+                key={t}
+                id={`${listId}-${i}`}
+                aria-selected={i === active}
+                className={i === active ? 'act' : ''}
+                tabIndex={-1}
+                // mousedown (not click) so the input keeps focus and doesn't close the list first
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  pick(t)
+                }}
+              >
+                {model.displayName(t)}
+                {title && <small>{title}</small>}
+              </button>
+            )
+          })
+        ) : (
+          <div className="none">{strings.noTeacherFound}</div>
+        )}
       </div>
-    </section>
+    </div>
   )
 }

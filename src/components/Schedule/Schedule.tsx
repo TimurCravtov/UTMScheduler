@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { LuSearch, LuTriangleAlert } from 'react-icons/lu'
 import { useModel } from '../../context/ScheduleContext'
 import { useCalendarGroups } from '../../hooks/useCalendarGroups'
 import { useSelection } from '../../hooks/useSelection'
@@ -7,6 +8,7 @@ import { strings } from '../../strings'
 import type { Entry } from '../../types'
 import { CalendarActions } from './CalendarActions'
 import { DayView } from './DayView'
+import { Empty } from './Empty'
 import { GroupPicker } from './GroupPicker'
 import { Legend } from './Legend'
 import { ModeToggle } from './ModeToggle'
@@ -21,7 +23,7 @@ const NO_CLASHES = new Set<Entry>()
 export function Schedule() {
   const model = useModel()
   const { meta } = model
-  const { selection, hadStoredGroup, setMode, setWeek, setTeacher, selectGroup, selectYear, selectSpec } =
+  const { selection, setMode, setWeek, setTeacher, selectGroup, selectYear, selectSpec } =
     useSelection(model)
   const { mode, year, group, teacher, week } = selection
 
@@ -42,7 +44,7 @@ export function Schedule() {
 
   let results
   if (mode === 'teacher' && !teacher) {
-    results = <div className="empty">{strings.teacherPrompt}</div>
+    results = <Empty icon={LuSearch}>{strings.teacherPrompt}</Empty>
   } else {
     results = (
       <>
@@ -55,9 +57,12 @@ export function Schedule() {
           {mode === 'group' && calendarGroups.has(group) && <CalendarActions group={group} />}
         </div>
         <Legend />
-        {clashes.size > 0 && <div className="clashnote">{strings.clashNote(clashes.size)}</div>}
+        {clashes.size > 0 && <div className="clashnote">
+            <LuTriangleAlert aria-hidden />
+            {strings.clashNote(clashes.size)}
+          </div>}
         {entries.length === 0 ? (
-          <div className="empty">{strings.nothingFound}</div>
+          <Empty>{strings.nothingFound}</Empty>
         ) : (
           <>
             <ScheduleGrid entries={entries} mode={mode} week={week} clashes={clashes} today={today} />
@@ -88,17 +93,19 @@ export function Schedule() {
             <ModeToggle mode={mode} onChange={setMode} />
           </header>
 
-          <GroupPicker
-            hidden={mode !== 'group'}
-            selection={selection}
-            initiallyClosed={hadStoredGroup}
-            onSelectGroup={selectGroup}
-            onSelectYear={selectYear}
-            onSelectSpec={selectSpec}
-          />
-          {mode === 'teacher' && <TeacherSearch teacher={teacher} onPick={setTeacher} />}
-
-          <WeekFilter week={week} onChange={setWeek} />
+          <div className="toolbar">
+            {mode === 'group' ? (
+              <GroupPicker
+                selection={selection}
+                onSelectGroup={selectGroup}
+                onSelectYear={selectYear}
+                onSelectSpec={selectSpec}
+              />
+            ) : (
+              <TeacherSearch teacher={teacher} onPick={setTeacher} />
+            )}
+            <WeekFilter week={week} onChange={setWeek} />
+          </div>
 
           <div>{results}</div>
 
