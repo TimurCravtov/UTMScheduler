@@ -2,8 +2,8 @@ name: Sync timetable and deploy
 
 on:
   # Refresh the timetable (and the .ics calendars) from the FCIM page every 6 hours
-  schedule:
-    - cron: '0 */6 * * *'
+  #schedule:
+  #  - cron: '0 */6 * * *'
   push:
     branches: [main]
   workflow_dispatch:
